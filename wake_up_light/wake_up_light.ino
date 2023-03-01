@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include "secret.h"
-#include "pageContent.h"
+#include "page_content.h"
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
