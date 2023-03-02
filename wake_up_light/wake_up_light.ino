@@ -147,10 +147,10 @@ void loop() {
           start_brightening_minute = alarm_minute - alarm_offset;
           start_brightening_hour = alarm_hour;
         }
-      if((current_hour>=start_brightening_hour) &&(current_minute>=start_brightening_minute)){
+      if((current_hour==start_brightening_hour) &&(current_minute==start_brightening_minute)&&(brightening_start == false)){
         brightening_start = true;
         }
-      if((current_hour==alarm_hour) &&(current_minute==alarm_minute)){
+      if((current_hour==alarm_hour) &&(current_minute==alarm_minute)&&(brightening_start == true)){
         brightening_start = false;
         alarm_set = false;
       }
