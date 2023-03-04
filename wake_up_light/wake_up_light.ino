@@ -39,7 +39,7 @@ void main_page_function(){
       }
     }
   }
-  server.send(200,"text/html", webpageCode(dim_level));
+  server.send(200,"text/html", webpageCode(dim_level, alarm_set));
 }
 
 
@@ -65,12 +65,12 @@ void set_time_function(){
     alarm_set = true;
     brightening_steps = int(alarm_offset*60*1000/90);
   }  
-  server.send(200,"text/plain", "Time set.");
+    server.send(200,"application/json", "{\"status\": \"ok\"}");
 }
 
 void unset_time_function(){
   alarm_set = false;   
-  server.send(200,"text/plain", "Time unset.");
+  server.send(200,"application/json", "{\"status\": \"ok\"}");
   }
 
 

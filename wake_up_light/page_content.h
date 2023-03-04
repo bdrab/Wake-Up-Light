@@ -1,42 +1,120 @@
-String webpageCode(int dimmer_light_level){
+String webpageCode(int dimmer_light_level, bool alarm_set_bool){
+
+// Strings are probably not good for producing page content as it does not work good when page is very long. Sometimes page is not being displayed.  
 
   String page_content = 
   R"(
 <!DOCTYPE html>
     <html>
         <head>
-            <style>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
                 body{
                     font-family: "Calibri"; 
-                    background-color: grey
+                    background-color: gray
                 }
+                
                 h1{
                     color: whitesmoke; 
                     text-align:center; 
                     font-size: 50px;
                 }
+                
                 .content{
                     margin: 0;
                     position: absolute;
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
+                    text-align: center;
                 }
+                
+                .hide{
+                  display: none;
+                }
+
+                #timerTimeInput{
+                    width: 100%;
+                    height: 60px;
+                    text-align: center;
+                    background-color: white;
+                    border-radius: 60px;
+                    margin-left: auto;
+                    border: 0 solid #A9A9A9;
+                    padding: 0;
+                    margin-bottom: 20px;
+                }
+
+                #timerTimeInput:before {
+                    content: 'TIME';
+                    text-align: center;
+                    margin: auto;
+                }
+
+                #timerOffsetInput{
+                    width: 100%;
+                    height: 60px;
+                    text-align: center;
+                    background-color: white;
+                    border-radius: 60px;
+                    margin-left: auto;
+                    padding: 0;
+                    border: 0 solid #A9A9A9;       
+                }
+
+                .buttonTimerDiv, .buttonDimmerDiv{
+                    width: 60%;
+                    height: 35px;
+                    text-align: center;
+                    background-color: white;
+                    border-radius: 60px;
+                    margin-left: auto;
+                    border: 5px solid #A9A9A9;
+                    padding: 0;
+                    cursor: pointer;
+                }
+
+                #timerOffsetInput{
+                    margin-bottom: 20px;
+                }
+                .timerDiv{
+                    margin-bottom: 40px;
+                }
+                
+
+                
             </style>
         </head>      
         <body>
             <h1>Dimmer Light - Alarm <br><br></h1>
             <div class="content">  
                 <div class="timerDiv">
-                    <input type="time" id="timerTimeInput" required>
-                    <input type="number" id="timerOffsetInput" placeholder="time in min">
-                    <button class="setTimerBtn" type="button">Set Timer</button> 
-                    <button class="unsetTimerBtn" type="button">Unset Timer</button> 
+                    <input type="time" id="timerTimeInput" required><br>
+                    <input type="number" id="timerOffsetInput" placeholder="time in min"><br>
 
+                 )";
+
+                 if(alarm_set_bool){
+                  page_content += R"(
+                    <button class="setTimerBtn buttonTimerDiv hide" type="button">Set Timer</button>
+                    <button class="unsetTimerBtn buttonTimerDiv" type="button">Unset Timer</button> 
+                  )";
+                 }
+                  else{
+                    page_content += R"(
+                      <button class="setTimerBtn buttonTimerDiv" type="button">Set Timer</button>
+                      <button class="unsetTimerBtn buttonTimerDiv hide" type="button">Unset Timer</button>
+                    )";
+                    }
+                   
+                
+  page_content += R"(
                 </div>
                 <div class="dimmerDiv">
-                    <input type="range" min="10" max="100" value="10" step="5" class="slider" id="lightLevelRange">
-                    <button class="turnOffBtn" type="button">Turn Off!</button> 
+                    <input type="range" min="10" max="100" value="10" step="5" class="slider" id="lightLevelRange"><br>
+                    <button class="turnOffBtn buttonDimmerDiv" type="button">Turn Off!</button> 
                 </div>
             </div> 
             <script>
@@ -74,11 +152,29 @@ String webpageCode(int dimmer_light_level){
                             minute: parseInt(data[1]),
                             offset: parseInt(offsetValue)
                         }))
+                        let responseData = await responseTime.json();
+                        if(responseData["status"] === "ok"){
+                          timerSetBtn.classList.toggle("hide");
+                          timerUnsetBtn.classList.toggle("hide");
+                          alert("Alarm has been set!");
+                          }
+                        else{
+                          alert("Alarm has not been set!");
+                          }
                     }
                 });
                 
                 timerUnsetBtn.addEventListener("click", async event => {
-                  let responseTime = await fetch('/unset_alarm?')  
+                  let responseTime = await fetch('/unset_alarm?');
+                  let responseData = await responseTime.json();
+                        if(responseData["status"] === "ok"){
+                          timerSetBtn.classList.toggle("hide");
+                          timerUnsetBtn.classList.toggle("hide");
+                          alert("Alarm has been unset!");
+                          }
+                        else{
+                          alert("Alarm has not been unset!");
+                          }  
                 });
 
                 lightOffBtn.addEventListener('click', async function (event) {
